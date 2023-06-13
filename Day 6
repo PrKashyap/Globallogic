@@ -1,0 +1,135 @@
+
+Day6  Exercise 1
+//using Anonymous class
+
+package pkgDay6;
+
+
+
+//using Anonymous class
+
+interface MathOp{
+	int add(int x,int y);
+	int substract(int x,int y);
+	int  multiply(int x,int y);
+	float division(int x,int y);
+}
+
+class Anonymous {
+   public static void main(String[] args) {
+	   MathOp m = new MathOp() {
+	         public int add(int x,int y)
+	         {
+	        	 return x+y;
+	         }
+
+			@Override
+			public int substract(int x, int y) {
+				// TODO Auto-generated method stub
+				return x-y;
+			}
+
+			@Override
+			public int multiply(int x, int y) {
+				// TODO Auto-generated method stub
+				return x*y;
+			}
+
+			@Override
+			public float division(int x, int y) {
+				// TODO Auto-generated method stub
+				return x/y;
+			}
+	      };
+	    
+	   System.out.println(m.add(7,5));
+	   System.out.println(m.substract(16,13));
+	   System.out.println(m.multiply(22,5));
+	   System.out.println(m.division(100,5));
+	}
+   
+}
+  
+  
+  
+  
+
+Day6  Exercise2
+
+
+   package Day6Practice;
+
+//using lambda
+
+interface I{
+     int in(int x,int y);
+    }
+ 
+ public class Inter {
+        public static void main(String[] args) {
+            I add= (x, y) -> x + y;
+            I mult=(x, y) -> x + y;
+            I div= (x, y) -> x + y;
+            I sub= (x, y) -> x + y;
+            
+        System.out.println(add.in(7,8));
+        System.out.println(mult.in(3,11));
+        System.out.println(sub.in(46,26));
+        System.out.println(div.in(25,5));
+        }
+        
+    }
+   
+   
+   
+   Exercise 3 Day6
+   
+   import java.util.*;
+ 
+    public class Bi {
+    public static void main(String args[])
+    {
+        
+        BiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;
+ 
+        System.out.println("Sum = " + add.apply(23,12));
+        
+ 
+        BiFunction<Integer, Integer, Integer> subs = (a, b) -> a - b;
+        
+        System.out.println("Substraction = " + sub.apply(56,15));
+ 
+        
+        BiFunction<Integer, Integer, Integer> mul = (7, 7) -> a * b;
+ 
+        System.out.println("Product = " + mul.apply(2, 13));
+        
+        
+        BiFunction<Integer, Integer, Integer> div = (a, b) -> a / b; 
+     
+        System.out.println("Division = " + div.apply(70,7));
+        
+        
+    }}
+    
+    
+    
+    
+ Day6  Exercise 4
+  
+ 
+    
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class MainDay3 {
+	public static void main(String args[])
+	{
+		List<Integer> li1 = Arrays.asList(3,2,4,52,66,23,95,65,7);
+		List square=li1.stream().map(x->x*x).collect(Collectors.toList());
+		List odd=li1.stream().filter(x->x%2!=0).collect(Collectors.toList());
+		System.out.println("Square no.s "+square);
+		System.out.println("Odd no.s "+odd);
+	}
+
+}
