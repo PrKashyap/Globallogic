@@ -1,0 +1,121 @@
+              //WAP to check if given number is odd-prime,odd-non-prime or even
+	
+	package pkgJavaDoc;  
+	import java.util.*;
+	public class HelloWorld  
+	{  
+	   
+		 public static void main(String[] args) {
+			 boolean flag = false;
+		        Scanner sc = new Scanner(System.in);
+	
+		        System.out.print("Enter a number: ");
+		        int num = sc.nextInt();
+	
+		        if(num % 2 == 0)
+		            System.out.println(num + " is even");
+		        else {
+		        	
+		        	    for (int i = 2; i <= num / 2; ++i) {
+		        	      
+		        	      if (num % i == 0) {
+		        	        flag = true;
+		        	        break;
+		        	      }
+		        	    }
+	
+		        	    if (!flag)
+		        	      System.out.println(num + " is odd prime number.");
+		        	    else
+		        	      System.out.println(num + " is odd non-prime number.");
+		        	  }
+		        	}
+		    }
+
+
+
+
+Day-2
+
+WAP to build a menu driven program using methods: 
+1. Enter a Number '
+2. Enter another Number
+3. Sum
+4. Subtract 
+5. Divide 
+6. Multiply 	
+7. Exit
+
+package pkgDay2; 
+
+import java.util.Scanner; 	
+
+public class MenuMain
+    { 	
+
+         public static int intputA(){ 
+         Scanner sc=new Scanner(System.in); 	
+         int a=sc.nextInt(); 		
+         return(a); 		
+     } 		 	
+
+public static int intputB()
+     { 
+        Scanner sc=new Scanner(System.in); 	
+        int b=sc.nextInt(); 	
+        return(b); 	
+     }
+
+public static int Add(int a,int b ) 	
+     { 	
+        return(a+b); 	
+     } 		
+
+public static int Sub(int a,int b ) 	
+    { 	
+       return(a-b); 	
+    } 		 		
+
+public static int Div(int a,int b ) 	
+  { 			
+  return a/b; 
+  } 		 		 	
+
+public static int Mul(int a,int b ) 		
+  { 		
+  return a*b; 	
+  } 			 		 
+
+public static void main(String[] args) { 	
+  Scanner sc=new Scanner(System.in); 	
+  int ch=0; 		
+  int a,b;
+
+while(true) { 	
+  System.out.println("PrashDayEx3:"); 	
+  System.out.println("1. Enter a number\n2. Enter another number\n3.sum \n4.Subtract \n5.Divide \n6.Multiply"); 			
+  System.out.println("Enter choice:(1-6)"); 	
+  ch=sc.nextInt(); 				 				 	
+
+if(ch==1) 	
+   System.out.println(intputA());		 		
+
+else if(ch==2) 				
+  System.out.println(intputB()); 				 		
+
+else if (ch==3) 		
+  System.out.println(Add(4,6)); 		
+
+else if (ch==4) 			
+  System.out.println(Sub(19,7)); 
+
+else if (ch==5) 			
+  System.out.println(Div(3,7)); 		
+
+else if (ch==6) 		
+
+System.out.println(Mul(3,7)); 	
+
+else break; 			 	
+  }}}
+
