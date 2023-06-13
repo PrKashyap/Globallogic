@@ -1,17 +1,13 @@
 
 package pkgDay1;
 
-
-
 public class HelloWorld {
-
 public static void main(String[] args) {
 
 int i,j;
 int n=5;
 
-   
-for ( i = 0; i < n; i++)
+   for ( i = 0; i < n; i++)
        {
            for ( j = 0; j < i; j++)
            {
@@ -20,7 +16,6 @@ for ( i = 0; i < n; i++)
              
            System.out.println();
        }  
-
 
 for ( i = 1; i <= n; i++)
        {
@@ -31,9 +26,35 @@ for ( i = 1; i <= n; i++)
              
            System.out.println();
        }  
-
-
+}
 }
 
-}
 
+
+
+
+Q2.Check whether an entered String (input from user) is a palindrome string or not.
+ 
+ package pkgDay2; 	
+   import java.util.*; 
+   public class Palindrome
+   { 	 	
+   public static void main(String[] args) { 	
+   // TODO Auto-generated method stub 			 
+   System.out.println("Enter the string"); 	
+   Scanner sc=new Scanner(System.in); 		
+   String str=sc.next(); 			 		
+   String reverseStr = ""; 				
+   for (int i = (str.length() - 1); i >=0; i--)
+   { 				  
+   reverseStr = reverseStr + str.charAt(i); 			
+   } 				     				 
+   if (str.equals(reverseStr))
+   { 		
+   System.out.println(str + " is a Palindrome String."); 	
+   } 				 
+   else { 		
+   System.out.println(str + " is not a Palindrome String."); 		
+        } 		
+   } 		
+   }
