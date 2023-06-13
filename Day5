@@ -1,0 +1,200 @@
+Day5 Exercise1
+Problem Statement:
+Create a list(Vector) of Employees. Add employees to the list. Print the list of employees every time a new employee is added.
+Employee is a class
+List<Employee> emps …
+Hint: override toString() in Employee
+
+
+package pkgDay5;
+import java.util.Vector;
+//Ex1 day5
+class Employee {
+    private String name;
+    private int age;
+
+    public Employee(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{name='" + name + "', age=" + age + "}";
+    }
+}
+
+public class ExDay5 {
+    public static void main(String[] args) {
+        Vector<Employee> employees = new Vector<>();
+
+        // Adding employees and printing the list
+        employees.add(new Employee("jon", 25));
+        printEmployeeList(employees);
+
+        employees.add(new Employee("lily", 30));
+        printEmployeeList(employees);
+
+        employees.add(new Employee("jimi", 35));
+        printEmployeeList(employees);
+    }
+
+    private static void printEmployeeList(Vector<Employee> employees) {
+        System.out.println("Employee List:");
+        for (Employee employee : employees) {
+            System.out.println(employee);
+        }
+        System.out.println();
+    }
+}
+
+
+
+Day5 Exercise2
+
+
+Problem Statement:
+String str=“import java.util.*;  
+class JavaExample{  
+  public static void main(String args[]){  
+     ArrayList<String> alist=new ArrayList<String>();  
+     alist.add("Prasansha kashyap");  
+     alist.add("Priya sharma");  
+    //iterating ArrayList
+     for(String str:alist)  
+        System.out.println(str);  
+     }  
+}”
+Scan the str, and prepare six stack for the brackets
+Create stacks for {, }, (, ), [, ]
+Compare the size of the stacks bracket pair-wise.
+If they do not match: display an error message else say: Compiled successfully.
+
+package Day5Exercise;
+import java.util.*;
+public class Day5exerciseEx2 {
+	public static void main(String[] args) {
+        String str = "import java.util.*; \n" +
+                     "class JavaExample{\n" +
+                     "  public static void main(String args[]){\n" +
+                     "     ArrayList<String> alist=new ArrayList<String>();\n" +
+                     "     alist.add(\"Prasansha Kashyap\");\n" +
+                     "     alist.add(\"Priya Sharma\");\n" +
+                     "     //iterating ArrayList\n" +
+                     "     for(String str:alist)\n" +
+                     "        System.out.println(str);\n" +
+                     "     }\n" +
+                     "}";
+
+        Stack<Character> stack = new Stack<>();
+        boolean error = false;
+
+        for (char ch : str.toCharArray()) {
+            if (ch == '{' || ch == '[' || ch == '(') {
+                stack.push(ch);
+            } else if (ch == '}' || ch == ']' || ch == ')') {
+                if (stack.isEmpty()) {
+                    error = true;
+                    break;
+                } else {
+                    char top = stack.pop();
+                    if ((ch == '}' && top != '{') ||
+                        (ch == ']' && top != '[') ||
+                        (ch == ')' && top != '(')) {
+                        error = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!stack.isEmpty() || error) {
+            System.out.println("Error: Brackets are not balanced.");
+        } else {
+            System.out.println("Compiled successfully.");
+        }
+    }
+}
+
+
+
+
+Day5 Exercise3
+Problem Statement:
+Prepare the same chat Application using real scenario with proper inputs between user1 and user2 one by one.
+Until any one of them says “bye”, the conversation should continue between user1 and user2
+
+//User Class
+
+package Day5Exercise;
+class User1 implements Runnable {
+	Chat m;
+	String[] s1 = { "Hi", "How are you?", "what day is it today?","Thanks. Bye!" };
+
+	public User1(Chat m1) {
+		this.m = m1;
+		new Thread(this).start();
+	}
+
+	public void run() {
+		for (int i = 0; i < s1.length; i++) {
+			m.Question("Person1: " + s1[i]);
+		}
+	}
+
+}
+
+
+
+//User2 Class
+package Day5Exercise;
+public class User2 implements Runnable {
+	Chat m;
+	String[] s2 = { "Hey ", "I am good", "It is Monday." };
+
+	public User2(Chat m2) {
+		this.m = m2;
+		new Thread(this).start();
+	}
+
+	public void run() {
+		for (int i = 0; i < s2.length; i++) {
+			m.Answer("Person2: " + s2[i]);
+		}
+	}
+
+}
+
+
+
+//Chat Class
+package Day5Exercise;
+public class Chat {
+	boolean flag = false;
+	public synchronized void Question(String msg) {
+		if (flag) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println(msg);
+		flag = true;
+		notify();
+		
+	}
+	public synchronized void Answer(String msg) {
+		if (!flag) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println(msg);
+		flag = false;
+		notify();
+		
+	}	
+}
