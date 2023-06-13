@@ -1,0 +1,324 @@
+day4 Question 1
+
+Design a class employee:
+EmpId 
+EmpName
+EmpAge
+If Empage entered is 
+
+Less than zero, throw an Arithmetic Exception: “Ghosts not allowed in Company”
+Less than 18, throw an Arithmetic Exception: “Children not allowed in Company”
+Greater than 60, throw an Arithmetic Exception: “Senior Citizens not allowed in Company”
+Greater than 200, throw an Arithmetic Exception: “Zombies not allowed in Company”
+Else if age is between 18-60, the employee joins the company
+Handle the various scenarios in Main.
+Show the usage in main
+
+
+import java.util.Scanner;
+
+class Employee {
+    private int Id;
+    private String Name;
+    private int Age;
+
+    public Employee(int Id, String Name, int Age) {
+        try {
+            if (Age < 0) {
+                throw new ArithmeticException("Ghosts not allowed in Company");
+            }
+            this.Id = Id;
+            this.Name = Name;
+            this.Age = Age;
+            validateAge();
+        } catch (ArithmeticException e) {
+            System.out.println("Exception: "+e);
+        }
+    }
+
+    public void validateAge() throws ArithmeticException {
+        if (Age < 18 && Age >= 0) {
+            throw new ArithmeticException("Children not allowed in Company");
+        } else if (Age > 60 && Age<=200) {
+            throw new ArithmeticException("Senior Citizens not allowed in Company");
+        } else if (Age > 200) {
+            throw new ArithmeticException("Zombies not allowed in Company");
+        } else {
+            System.out.println("Employee joins the company.");
+        }
+    }
+}
+
+public class ExceptionQues {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter employee ID: ");
+        int empId = sc.nextInt();
+        System.out.print("Enter employee name: ");
+        String Name = sc.nextLine();
+        System.out.print("Enter employee age: ");
+        int Age = sc.nextInt();
+
+        Employee employee = new Employee(empId, Name, Age);
+
+    }
+}
+
+Day4 Question 2
+
+Create a class Employee(empId, empName, empAge, empSal)
+Create a list for storing emps
+None of the emps in the list can have a negative salary
+Age is to be validated by class employee:
+check Emoployee Age at start of the program in epmloyee constructor 
+If Employee Age entered is 
+Less than zero, throw an Arithmetic Exception: “Ghosts not allowed in Company”
+Less than 18, throw an Arithmetic Exception: “Children not allowed in Company”
+Greater than 60, throw an Arithmetic Exception: “Senior Citizens not allowed in Company”
+Greater than 200, throw an Arithmetic Exception: “Zombies not allowed in Company”
+Else if age is between 18-60, the employee joins the company
+For appraisal method, if executed, a single value of percentage should be give to the list so that the list is updated with individual salaries:
+Void appraisal(list<Emps> emps, int p){all members of the list should have updated salary}
+Provide Menu driven prg for : (take proper input from scanner)
+1. Add an Employee
+2. Remove an Employee
+3. List all Employees
+4. List an Employee’s details based on empId
+5. Give appraisal
+6. exit
+
+
+//class Employee
+
+
+package pkgDay4;
+
+
+public class Employee {
+    private int Id;
+    private String name;
+    private int age;
+    private double sal;
+
+    public Employee(int Id, String name, int age, double sal) {
+        validateAge(age);
+
+        this.Id = Id;
+        this.name = name;
+        this.age = age;
+        this.sal = sal;
+    }
+
+    private void validateAge(int age) {
+        if (age < 0) {
+            throw new ArithmeticException("Ghosts not allowed in Company");
+        } else if (age < 18 && age >= 0) {
+            throw new ArithmeticException("Children not allowed in Company");
+        } else if (age > 60 && age<=200) {
+            throw new ArithmeticException("Senior Citizens not allowed in Company");
+        } else if (age > 200) {
+            throw new ArithmeticException("Zombies not allowed in Company");
+        }
+        else {
+            System.out.println("Employee joins the company.");
+        }
+    }
+    
+    public int getId() {
+        return Id;
+    }
+
+    public String getname() {
+        return name;
+    }
+
+    public int getage() {
+        return age;
+    }
+
+    public double getsal() {
+        return sal;
+    }
+
+    public void setsal(double sal) {
+        if (sal < 0) {
+            throw new ArithmeticException("Salary cannot be negative");
+        }
+        this.sal = sal;
+    }
+}
+
+
+
+
+
+
+
+
+
+//EmployeeMain Class
+
+package pkgDay4;
+import java.util.*;
+
+
+public class EmployeeMain {
+    private static List<Employee> employees = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int choice;
+
+        do {
+            System.out.println("\nMenu:");
+            System.out.println("1. Add an Employee");
+            System.out.println("2. Remove an Employee");
+            System.out.println("3. List all Employees");
+            System.out.println("4. List an Employee's details based on Id");
+            System.out.println("5. Give appraisal");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (choice) {
+                case 1:
+                    addEmployee();
+                    break;
+                case 2:
+                    removeEmployee();
+                    break;
+                case 3:
+                    listAllEmployees();
+                    break;
+                case 4:
+                    listEmployeeDetails();
+                    break;
+                case 5:
+                    giveAppraisal();
+                    break;
+                case 6:
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Try again.");
+                    break;
+            }
+        } while (choice != 6);
+    }
+
+    private static void addEmployee() {
+        try {
+            System.out.print("\nEnter employee ID: ");
+            int Id = scanner.nextInt();
+            scanner.nextLine(); 
+
+            System.out.print("Enter employee name: ");
+            String name = scanner.nextLine();
+
+            System.out.print("Enter employee age: ");
+            int age = scanner.nextInt();
+            scanner.nextLine(); 
+
+            System.out.print("Enter employee salary: ");
+            double salary = scanner.nextDouble();
+            scanner.nextLine(); 
+            if (salary < 0) {
+                throw new ArithmeticException("Salary cannot be negative");
+            }
+
+            Employee employee = new Employee(Id, name, age, salary);
+            employees.add(employee);
+            System.out.println("Employee added successfully.");
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please try again.");
+            scanner.nextLine(); 
+        } catch (ArithmeticException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void removeEmployee() {
+        System.out.print("\nEnter the employee ID to remove: ");
+        int Id = scanner.nextInt();
+        scanner.nextLine(); 
+
+        boolean removed = false;
+        for (Employee employee : employees) {
+            if (employee.getId() == Id) {
+                employees.remove(employee);
+                removed = true;
+                System.out.println("Employee removed successfully.");
+                break;
+            }
+        }
+
+        if (!removed) {
+            System.out.println("Employee with ID " + Id + " not found.");
+        }
+    }
+
+    private static void listAllEmployees() {
+        if (employees.isEmpty()) {
+            System.out.println("\nNo employees found.");
+        } else {
+            System.out.println("\nEmployee List:");
+            for (Employee employee : employees) {
+                System.out.println("Employee ID: " + employee.getId());
+                System.out.println("Employee Name: " + employee.getname());
+                System.out.println("Employee Age: " + employee.getage());
+                System.out.println("Employee Salary: " + employee.getsal());
+                System.out.println();
+            }
+        }
+    }
+
+    private static void listEmployeeDetails() {
+        System.out.print("\nEnter the employee ID to view details: ");
+        int Id = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        boolean found = false;
+        for (Employee employee : employees) {
+            if (employee.getId() == Id) {
+                System.out.println("\nEmployee Details:");
+                System.out.println("Employee ID: " + employee.getId());
+                System.out.println("Employee Name: " + employee.getname());
+                System.out.println("Employee Age: " + employee.getage());
+                System.out.println("Employee Salary: " + employee.getsal());
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Employee with ID " + Id + " not found.");
+        }
+    }
+
+    private static void giveAppraisal() {
+        try {
+            System.out.print("\nEnter appraisal percentage: ");
+            int percentage = scanner.nextInt();
+            scanner.nextLine(); 
+
+            for (Employee employee : employees) {
+                double updatedSalary = employee.getsal() + (employee.getsal() * percentage / 100);
+                employee.setsal(updatedSalary);
+            }
+
+            System.out.println("Appraisal applied successfully.");
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please try again.");
+            scanner.nextLine(); 
+        } catch (ArithmeticException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+
+
+
+
