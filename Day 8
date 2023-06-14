@@ -1,0 +1,118 @@
+Day8 Ex-1
+
+Inserting Values-
+
+insert into employee values(104,'D',30000);
+insert into leaves values (104,20);
+
+
+
+Code - for delete empId 104 from employee;
+Error -
+			delete from employee where empId=104	Error Code: 1451. Cannot delete or update a parent row: a foreign key constraint fails (`training`.`leaves`, CONSTRAINT `leaves_ibfk_1` FOREIGN KEY (`empId`) REFERENCES `employee` (`empId`))	
+
+
+
+Code - update employee set empId=105 where empId=104;
+Error -
+
+     	   		update employee set  empId=105 where empId=104	Error Code: 1451. Cannot delete or update a parent row: a foreign key constraint fails (`training`.`leaves`, CONSTRAINT `leaves_ibfk_1` FOREIGN KEY (`empId`) REFERENCES `employee` (`empId`))	
+
+
+Code- 
+         update leaves set empId=103 where empId=104;
+
+Console message-  
+				update leaves set empId=103 where empId=104	1 row(s) affected Rows matched: 1  Changed: 1  Warnings: 0	
+
+
+
+Code- delete from leaves where empId=104;
+
+Console message-   
+  			      delete from leaves where empId=104	0 row(s) affected	0.000 sec
+
+
+
+Select * from employees-
+
+101	A	10000
+102	B	20000
+103	C	25000
+104	D	30000
+111	D	15000
+112	E	21000
+113	A	25500
+		
+					
+
+
+Select * from leaves;
+
+101	5
+101	10
+103	20
+
+
+
+Exercise 2
+
+
+
+Select name of two people with max age : Training
+
+select * from people order by age desc limit 2;
+
+
+
+
+
+Exercise 3 –
+
+Creating table movies-
+
+Create table movies(
+Id int not null,
+title varchar(50) ,
+category varchar(30),
+primary key (Id)
+
+);
+
+Creating table members- 
+
+Create table members(
+Id int not null,
+first_name varchar(20) ,
+last_name varchar(20),
+movie_id int,
+primary key (Id),
+foreign key (movie_id) references movies(Id));
+
+
+
+Inserting data into 
+
+Members-
+
+insert into members values
+(1,"Adam","Smith",1),
+(2,"Ravi","Kumar",2),
+(3,"Susan","Davidson",5),
+(4,"Jenny","Adrianna",8),
+(6,'Lee','Pong',10);
+
+
+Movies –
+
+insert into movies values
+(1,'ASSASINS CREED: EMBERS','Animations'),
+(2,'Real Steal(2012)','Animations'),
+(3,'Alvin and the Chipmunks','Animations'),
+(4,'The adventures of Tin Tin','Animations'),
+(5,'Safe(2012)','Action'),
+(6,'Safe House(2012)','Action'),
+(7,'3 idiots','Drama'),
+(8,'Ghazni','Drama'),
+(9,'Nayak','Drama'),
+(10,'Marley and Me','Family')
