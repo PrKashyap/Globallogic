@@ -1,0 +1,208 @@
+
+import java.util.*;
+
+
+class Employee {
+static int eCount = 0;
+private String eName;
+private String designation;
+private Integer salary;
+
+public Employee() {
+}
+
+public Employee(String eName, String d, int sal) {
+this.eName = eName;
+this.designation = d;
+this.salary = sal;
+}
+
+
+public String geteName() {
+return eName;
+}
+public void seteName(String eName) {
+this.eName = eName;
+}
+public String getDesignation() {
+return designation;
+}
+public void setDesignation(String designation) {
+this.designation = designation;
+}
+public Integer getSalary() {
+return salary;
+}
+public void setSalary(int salary) {
+this.salary = salary;
+}
+public int geteCount() {
+return eCount;
+}
+public void seteCount(int eCount) {
+Employee.eCount = eCount;
+}
+@Override
+public String toString() {
+return "Employee [eName=" + eName + ", designation=" + designation +
+
+", salary=" + salary + "]";
+}
+}
+public class PracPrblm7 {
+	
+HashMap<Integer, Employee> map = new HashMap<>();
+
+Scanner scan = new Scanner(System.in);
+
+void display(Employee rec) {
+	
+if (map.isEmpty()) {
+System.out.println("No records available\n");
+}
+
+System.out.println("No of Employees:" + Employee.eCount + "\nEmployeeList:" + map);
+}
+
+
+public static HashMap<Integer, Employee> sortedByName(HashMap<Integer, Employee>hm) {
+
+
+List<Map.Entry<Integer, Employee>> list = new
+LinkedList<Map.Entry<Integer, Employee>>(hm.entrySet());
+
+
+Collections.sort(list, new Comparator<Map.Entry<Integer, Employee>>() {
+public int compare(Map.Entry<Integer, Employee> m,Map.Entry<Integer, Employee> n) {
+return (m.getValue().geteName()).compareTo(n.getValue().geteName());
+}
+});
+
+
+
+HashMap<Integer, Employee> temp = new LinkedHashMap<Integer, Employee>();
+for (Map.Entry<Integer, Employee> aa : list) {
+temp.put(aa.getKey(), aa.getValue());
+}
+return temp;
+}
+public static HashMap<Integer, Employee> sortedBySal(HashMap<Integer, Employee>
+hm) {
+
+
+List<Map.Entry<Integer, Employee>> list = new
+LinkedList<Map.Entry<Integer, Employee>>(hm.entrySet());
+
+
+Collections.sort(list, new Comparator<Map.Entry<Integer, Employee>>() {
+public int compare(Map.Entry<Integer, Employee> m,
+
+Map.Entry<Integer, Employee> n) {
+return
+
+(m.getValue().getSalary()).compareTo(n.getValue().getSalary());
+
+}
+});
+
+HashMap<Integer, Employee> temp = new LinkedHashMap<Integer, Employee>();
+for (Map.Entry<Integer, Employee> aa : list) {
+temp.put(aa.getKey(), aa.getValue());
+}
+return temp;
+}
+void menu() {
+System.out.println("Menu:");
+System.out.println(
+
+"1.Add Employee\n2.View Employee\n3.Search Employee5\n4.Sort Employee by salary\n5.Sort Employee by name\n6.Exit");
+
+System.out.println("Enter choice:(1-5)");
+}
+public static void main(String[] args) {
+
+Employee record = new Employee();
+EmployeeSystem r1 = new EmployeeSystem();
+int option = 0;
+while (true) {
+r1.menu();
+option = r1.scan.nextInt();
+switch (option) {
+case 1:
+try {
+System.out.print("Enter employee id ");
+int empId = r1.scan.nextInt();
+System.out.print("Enter employee Name ");
+String name = r1.scan.next();
+System.out.print("Enter Designation ? ");
+String des = r1.scan.next();
+System.out.print("Enter the Salary ? ");
+int sal = r1.scan.nextInt();
+record.seteCount(Employee.eCount + 1);
+record = new Employee(name, des, sal);
+r1.map.put(empId, record);
+System.out.print("Saved.");
+} catch (ArithmeticException e1) {
+System.out.println(e1);
+} catch (InputMismatchException e) {
+System.out.println(e);
+}
+break;
+case 2:
+r1.display(record);
+break;
+case 3:
+System.out.print("Enter Employee id ? ");
+int empId = r1.scan.nextInt();
+System.out.print("\nEmployees: " +
+r1.map.entrySet().stream().filter(e -> e.getKey() == empId).collect(Collectors.toMap(e -> e.getKey(), e ->e.getValue())) + "\n");
+break;
+case 4:
+Map<Integer, Employee> sortedBySal = sortedBySal(r1.map);
+for (Map.Entry<Integer, Employee> en : sortedBySal.entrySet())
+
+{
+
+System.out.println("Key = " + en.getKey() + ", Value = "
+
++ en.getValue());
+
+}
+break;
+case 5:
+Map<Integer, Employee> sortedByName =
+
+sortedByName(r1.map);
+
+for (Map.Entry<Integer, Employee> en :
+
+sortedByName.entrySet()) {
+
+System.out.println("Key = " + en.getKey() + ", Value = "
+
++ en.getValue());
+
+}
+break;
+ case 6:
+ System.out.print("Employee sorted by name:\n");
+ r1.eList.stream().sorted((m, n) ->m.geteName().compareTo(n.geteName()))
+ .forEach(e -> System.out.print(e + " \n"));
+ break;
+ case 7:
+ System.out.print("Employee with UPPER case:\n");
+ r1.eList.stream().map(name ->name.geteName().toUpperCase())
+ .forEach(e -> System.out.print(e + " \n"));
+ break;
+case 8:
+System.out.println("\nExiting!\n");
+
+System.exit(0);
+break;
+default:
+System.out.println("\nInvalid input\n");
+break;
+}
+}
+}
+}
