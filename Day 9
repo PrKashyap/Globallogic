@@ -1,0 +1,262 @@
+
+Day 9
+
+
+Excercise 1 
+
+package Day9;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class ConnectionDB {
+	private static final String URL="jdbc:mysql://localhost:3306/EMS";
+	private static final String userName="root";
+	private static final String userPass="Prash@16";
+	
+	public static Connection getConnection() throws SQLException {
+		return DriverManager.getConnection(URL, userName, userPass);
+	}
+
+}
+
+
+package Day9;
+
+public class Employee {
+	private int Id;
+	private String Name;
+	private String Designation;
+	private double Salary;
+
+	public Employee(int Id, String Name, String Designation, double Salary) {
+		super();
+		this.Id = Id;
+		this.Name = Name;
+		this.Designation = Designation;
+		this.Salary = Salary;
+	}
+	public int getId() {
+		return Id;
+	}
+	public void setId(int Id) {
+		this.Id = Id;
+	}
+	public String getName() {
+		return Name;
+	}
+	public void setName(String Name) {
+		this.Name = Name;
+	}
+	public String getDesignation() {
+		return Designation;
+	}
+	public void setDesignation(String Designation) {
+		this.Designation = Designation;
+	}
+	public double getSalary() {
+		return Salary;
+	}
+	public void setSalary(double Salary) {
+		this.Salary = Salary;
+	}
+	@Override
+	public String toString() {
+		return "Employee : [ Id : " + Id + ", Name : " + Name + ", Designation : " + Designation
+				+ ", Salary : " + Salary + " ]";
+	}
+	
+	
+
+}
+
+
+
+package Day9;
+
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		Methods Methods = new Methods();
+		Scanner scanner = new Scanner(System.in);
+		while (true) {
+			System.out.println("Employee Management Service :");
+			System.out.println("1. Add Employee");
+			System.out.println("2. Display Employees");
+			System.out.println("3. Update Employee");
+			System.out.println("4. Remove Employee");
+			System.out.println("0. Exit");
+			System.out.println("Enter Your Choice");
+
+			int choice = scanner.nextInt();
+
+			if (choice == 0) {
+				System.out.println("Closed");
+				break;
+			}
+			switch (choice) {
+			case 1:
+				System.out.println("\nAdd Employee :\n");
+				System.out.println("Enter ID : ");
+				int Id = scanner.nextInt();
+				scanner.nextLine();
+				System.out.println("Enter Name : ");
+
+				String Name = scanner.nextLine();
+
+				System.out.println("Enter Designation : ");
+
+				String Designation = scanner.nextLine();
+
+				System.out.println("Enter Salary : ");
+				double Salary = scanner.nextDouble();
+
+				Employee employee = new Employee(Id, Name, Designation, Salary);
+				Methods.addEmployee(employee);
+
+				break;
+			case 2:
+				System.out.println("\nDisplay Employee :\n");
+				Methods.viewAllEmployees();
+
+				break;
+			case 3:
+				System.out.println("\nUpdate :\n");
+				System.out.println("Enter ID to update :");
+				int IdUpdate = scanner.nextInt();
+				Methods.updateEmployee(IdUpdate);
+			case 4:
+				System.out.println("\nRemove Employee : \n");
+				System.out.println("Enter ID to Remove");
+				int IdRemove = scanner.nextInt();
+				Methods.removeEmployee(IdRemove);
+				break;
+			default:
+				System.out.println("Enter a correct choice ...");
+				break;
+
+			}
+
+		}
+
+
+	}
+
+}
+
+
+
+
+
+package Day9;
+
+import java.sql.*;
+import java.util.*;
+
+
+public class Methods {
+
+	public void addEmployee (Employee employee) {
+		try(Connection connection = ConnectionDB.getConnection();
+				Statement statement = connection.prepareStatement(
+						"INSERT INTO Employee (id, name, designation, salary) VALUES (?, ?, ?, ?)"))
+		{
+			statement.setInt(1, employee.getId());
+			statement.setString(2, employee.getName());
+			statement.setString(3, employee.getDesignation());
+			statement.setDouble(4, employee.getSalary());
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Employee added successfully!");
+            }
+			
+		}catch(SQLException e){
+			System.out.println(e);
+		}
+	}
+		  public void removeEmployee(int Id) {
+	        try (Connection connection = ConnectionDB.getConnection();
+	             CallableStatement statement = connection.prepareCall("DELETE FROM Employee WHERE id=(?);")) {
+	
+	            statement.setInt(1, Id);
+	
+	            int rowsDeleted = statement.executeUpdate();
+	            if (rowsDeleted > 0) {
+	                System.out.println("Deleted successfully!");
+	            } else {
+	                System.out.println("Employee ID " + Id + " does not exist.");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	
+	    public void viewAllEmployees() {
+	        try (Connection connection = ConnectionDB.getConnection();
+	             Statement statement = connection.createStatement();
+	             ResultSet resultSet = statement.executeQuery("SELECT * FROM Employee")) {
+	
+	            List<Employee> employees = new ArrayList<>();
+	
+	            while (resultSet.next()) {
+	                int Id = resultSet.getInt("id");
+	                String name = resultSet.getString("name");
+	                String designation = resultSet.getString("designation");
+	                double salary = resultSet.getDouble("salary");
+	
+	                Employee employee = new Employee(Id, name, designation, salary);
+	                employees.add(employee);
+	            }
+	
+	            if (!employees.isEmpty()) {
+	                System.out.println("Employee Details:");
+	                for (Employee employee : employees) {
+	                    System.out.println(employee);
+	                }
+	            } else {
+	                System.out.println("No employees found.");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	
+	    public void updateEmployee(int Id) {
+	        try (Connection connection = ConnectionDB.getConnection();
+	             Statement statement = connection.Statement(
+	                     "UPDATE Employee SET name = ?, designation = ?, salary = ? WHERE id = ?")) {
+	
+	            Scanner scanner = new Scanner(System.in);
+	
+	            System.out.print("Enter name: ");
+	            String name = scanner.nextLine();
+	
+	            System.out.print("Enter designation: ");
+	            String designation = scanner.nextLine();
+	
+	            System.out.print("Enter salary: ");
+	            double salary = scanner.nextDouble();
+	
+	            statement.setString(1, name);
+	            statement.setString(2, designation);
+	            statement.setDouble(3, salary);
+	            statement.setInt(4, Id);
+	
+	            int rowsUpdated = statement.executeUpdate();
+	            if (rowsUpdated > 0) {
+	                System.out.println("Update successfully!");
+	            } else {
+	                System.out.println("Employee with ID " + Id + " does not exist.");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+		
+	
+
+
+}
