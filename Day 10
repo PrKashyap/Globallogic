@@ -1,0 +1,455 @@
+package Day10;
+
+
+import java.util.Properties;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.*;
+import org.hibernate.service.ServiceRegistry;
+
+public class HibernateUtil {
+	private static SessionFactory sessionFactory;
+
+	public static SessionFactory getSessionFactory() {
+		if (sessionFactory == null) {
+			try {
+				Configuration configuration = new Configuration();
+				Properties settings = new Properties();
+				settings.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
+				settings.put(Environment.URL, "jdbc:mysql://localhost:3306/hibernateDay9Ex");
+				settings.put(Environment.USER, "root");
+				settings.put(Environment.PASS, "root");
+				settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
+				settings.put(Environment.SHOW_SQL, "true");
+				settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
+				settings.put(Environment.HBM2DDL_AUTO, "update");
+				configuration.setProperties(settings);
+				configuration.addAnnotatedClass(Employee.class);
+				ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+						.applySettings(configuration.getProperties()).build();
+				sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return sessionFactory;
+	}
+
+}
+
+---------------------------------------------
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Employee")
+public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int empld;
+
+    @Column(name = "empName")
+    private String empName;
+
+    @Column(name = "empSal")
+    private double empSal;
+
+    @Column(name = "empAge")
+    private int empAge;
+
+    @Column(name = "CompName")
+    private String compName;
+
+    public Employee() {
+    }
+
+    public Employee(String empName, double empSal, int empAge, String compName) {
+        this.empName = empName;
+        this.empSal = empSal;
+        this.empAge = empAge;
+        this.compName = compName;
+    }
+
+ 
+
+    public int getEmpld() {
+        return empld;
+    }
+
+    public void setEmpld(int empld) {
+        this.empld = empld;
+    }
+
+    public String getEmpName() {
+        return empName;
+    }
+
+    public void setEmpName(String empName) {
+        this.empName = empName;
+    }
+
+    public double getEmpSal() {
+        return empSal;
+    }
+
+    public void setEmpSal(double empSal) {
+        this.empSal = empSal;
+    }
+
+    public int getEmpAge() {
+        return empAge;
+    }
+
+    public void setEmpAge(int empAge) {
+        this.empAge = empAge;
+    }
+
+    public String getCompName() {
+        return compName;
+    }
+
+    public void setCompName(String compName) {
+        this.compName = compName;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "empld=" + empld +
+                ", empName='" + empName + '\'' +
+                ", empSal=" + empSal +
+                ", empAge=" + empAge +
+                ", compName='" + compName + '\'' +
+                '}';
+    }
+}
+
+---------------------------------------
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import java.util.*;
+
+public class Main {
+    private static SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int choice = 0;
+
+        while (choice != 6) {
+            Menu();
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (choice) {
+                case 1:
+                    addEmp(scanner);
+                    break;
+                case 2:
+                    updateEmp(scanner);
+                    break;
+                case 3:
+                    deleteEmp(scanner);
+                    break;
+                case 4:
+                    displayEmp();
+                    break;
+                case 5:
+                    searchEmp(scanner);
+                    break;
+                case 6:
+                    System.out.println("Exiting");
+                    break;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+
+
+        scanner.close();
+    }
+
+    private static void Menu() {
+        System.out.println(" Menu ");
+        System.out.println("1. Add Employee");
+        System.out.println("2. Update Employee by ID");
+        System.out.println("3. Delete Employee by ID");
+        System.out.println("4. Display Employees");
+        System.out.println("5. Search an Employee");
+        System.out.println("6. Exit");
+        System.out.println("--------------------");
+    }
+
+    private static void addEmp(Scanner scanner) {
+        System.out.print("Enter name: ");
+        String empName = scanner.nextLine();
+
+        System.out.print("Enter salary: ");
+        double empSal = scanner.nextDouble();
+
+        System.out.print("Enter age: ");
+        int empAge = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        System.out.print("Enter company name: ");
+        String compName = scanner.nextLine();
+
+        Employee employee = new Employee(empName, empSal, empAge, compName);
+
+        Session session = sessionFactory.openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            session.save(employee);
+            transaction.commit();
+            System.out.println("Employee inserted!");
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    private static void updateEmp(Scanner scanner) {
+        System.out.print("Enter employee ID: ");
+        int empld = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        Session session = sessionFactory.openSession();
+        Employee employee = session.get(Employee.class, empld);
+
+        if (employee != null) {
+            System.out.println("Current employee data:");
+            System.out.println(employee);
+
+            System.out.print("Enter employee name: ");
+            String empName = scanner.nextLine();
+
+            System.out.print("Enter employee salary: ");
+            double empSal = scanner.nextDouble();
+
+            System.out.print("Enter employee age: ");
+            int empAge = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            System.out.print("Enter company name: ");
+            String compName = scanner.nextLine();
+
+            Transaction transaction = null;
+
+            try {
+                transaction = session.beginTransaction();
+                employee.setEmpName(empName);
+                employee.setEmpSal(empSal);
+                employee.setEmpAge(empAge);
+                employee.setCompName(compName);
+                session.update(employee);
+                transaction.commit();
+                System.out.println("Employee updated successfully!");
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
+            } finally {
+                session.close();
+            }
+        } else {
+            System.out.println("Employee ID " + empld + " not found.");
+        }
+    }
+
+    private static void deleteEmp(Scanner scanner) {
+        System.out.print("Enter employee ID: ");
+        int empld = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        Session session = sessionFactory.openSession();
+        Employee employee = session.get(Employee.class, empld);
+
+        if (employee != null) {
+            Transaction transaction = null;
+
+            try {
+                transaction = session.beginTransaction();
+                session.delete(employee);
+                transaction.commit();
+                System.out.println("Employee deleted successfully!");
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
+            } finally {
+                session.close();
+            }
+        } else {
+            System.out.println("Employee ID " + empld + " not found.");
+        }
+    }
+
+    private static void displayEmp() {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        String query = "FROM Employee";
+        List<Employee> employees = session.createQuery(query, Employee.class).getResultList();
+
+        System.out.println("Employee List:");
+        for (Employee employee : employees) {
+            System.out.println(employee);
+        }
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    private static void searchEmp(Scanner scanner) {
+        System.out.print("Enter employee ID: ");
+        int empld = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        Session session = sessionFactory.openSession();
+        Employee employee = session.get(Employee.class, empld);
+
+        if (employee != null) {
+            System.out.println("Employee Details:");
+            System.out.println(employee);
+        } else {
+            System.out.println("Employee ID " + empld + " not found.");
+        }
+
+        session.close();
+    }
+}
+
+
+Day 10 ex1
+package ExersiceDay9;
+import java.util.regex.*;
+import java.util.*;
+
+public class Exercise1Day10 {
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+; 
+        int choice = 0;
+
+        while (choice != 6) {
+			System.out.println("Menu"
+					+ " \n 1.Enter number to check match format 00/00/00"
+					+ " \n 2.Enter date to match dd/mm/yyyy"
+					+"\n 0.Exit ");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+            sc.nextLine(); // Consume the newline character
+            String stringToMatch = sc.nextLine();
+            
+            if(choice ==0) {
+            	break;
+            }
+            switch (choice) {
+                case 1:
+            		
+            		System.out.println(Pattern.matches("[0-9]{2}/[0-9]{2}/[0-9]{2}", stringToMatch));                 
+                    break;
+                case 2:
+            		
+            		System.out.println(Pattern.matches("((0[1-9]|[12][0-9]|3[0-1])/(0[1-9]|10|11|12)/[0-9]{4})", stringToMatch)); 
+                    break;
+                  
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    
+            }
+        }
+	
+	}
+
+
+}
+--------------------------------------------------
+
+Excercise 2
+
+package JDBC;
+
+import java.sql.*;
+import java.util.*;
+
+public class RegisterExample {
+    public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/EXDAY10";
+        String username = "root";
+        String password = "root";
+        Scanner sc = new Scanner(System.in);
+
+        try {
+            Connection connection = DriverManager.getConnection(url, username, password);
+            Statement statement = connection.createStatement();
+
+            boolean exit = false;
+            while (!exit) {
+                System.out.println("Menu:");
+                System.out.println("1. Add details");
+                System.out.println("2. Show details");
+                System.out.println("3. Exit");
+                System.out.print("Enter your choice: ");
+
+             
+                int choice = sc.nextInt();
+                sc.nextLine();
+
+                switch (choice) {
+                    case 1:
+                  
+                        System.out.print("Enter name: ");
+                        String name = sc.nextLine();
+                        System.out.print("Enter email: ");
+                        String email = sc.nextLine();
+
+                        String insertQuery = "Insert into register (name, email) VALUES ('" + name + "', '" + email + "')";
+                        statement.executeUpdate(insertQuery);
+                        System.out.println("Data inserted.");
+                        break;
+
+                    case 2:
+                      
+                        String selectQuery = "SELECT * FROM register";
+                        ResultSet resultSet = statement.executeQuery(selectQuery);
+                        System.out.println("Listing values of Register:");
+
+                        while (resultSet.next()) {
+                            String retrievedName = resultSet.getString("name");
+                            String retrievedEmail = resultSet.getString("email");
+                            System.out.println("Name: " + retrievedName + ", Email: " + retrievedEmail);
+                        }
+                        resultSet.close();
+                        break;
+
+                    case 3:
+                     
+                        exit = true;
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice.");
+                }
+            }
+
+        
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
